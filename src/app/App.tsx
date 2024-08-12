@@ -6,12 +6,11 @@ import { useAppSelector } from './store.ts'
 import { appStatusSelector } from './app-selectors.ts'
 
 export const App = () => {
-  const appStatus = useAppSelector(appStatusSelector)
-  const {status, error} = appStatus
+  const appStatus = useAppSelector(appStatusSelector).status
 
   return (
     <div>
-      {status === 'loading' && <LinearLoader/>}
+      {appStatus === 'loading' && <LinearLoader/>}
       <Decks />
       <GlobalError />
     </div>

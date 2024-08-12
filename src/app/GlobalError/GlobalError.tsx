@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
+import { useAppSelector } from '../store.ts'
+import { appStatusSelector } from '../app-selectors.ts'
 
 export const GlobalError = () => {
-  const errorMessage = ''
+  const errorMessage = useAppSelector(appStatusSelector).error
 
   useEffect(() => {
     if (errorMessage) {
