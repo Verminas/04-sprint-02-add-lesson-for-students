@@ -1,9 +1,10 @@
 import { Dispatch } from 'redux'
 import { decksAPI, instance, UpdateDeckParams } from './decks-api.ts'
 import { addDeckAC, deleteDeckAC, setDecksAC, updateDeckAC } from './decks-reducer.ts'
-import { setAppStatusAC } from '../../app/app-reducer.ts'
-import axios, { AxiosError } from 'axios'
+import { setAppErrorAC, setAppStatusAC } from '../../app/app-reducer.ts'
+import axios, { AxiosError, isAxiosError } from 'axios'
 import { AppDispatch } from '../../app/store.ts'
+import { handleError } from '../../common/utils/handle-error.ts'
 
 export const fetchDecksTC = () => async (dispatch: AppDispatch) => {
   try {
@@ -12,7 +13,7 @@ export const fetchDecksTC = () => async (dispatch: AppDispatch) => {
     dispatch(setDecksAC(res.data.items))
     dispatch(setAppStatusAC('succeeded'))
   } catch (e) {
-    setErrorMessage(e, dispatch)
+    handleError(e, dispatch)
   }
 }
 
@@ -24,7 +25,7 @@ export const addDeckTC = (name: string) => async (dispatch: AppDispatch) => {
     const res = await decksAPI.addDeck(name)
     dispatch(addDeckAC(res.data))
   } catch (e) {
-    setErrorMessage(e, dispatch)
+    handleError(e, dispatch)
   }
 }
 
@@ -35,7 +36,7 @@ export const deleteDeckTC = (id: string) => async (dispatch: AppDispatch) => {
     dispatch(deleteDeckAC(res.data.id))
     dispatch(setAppStatusAC('succeeded'))
   } catch (e) {
-    setErrorMessage(e, dispatch)
+    handleError(e, dispatch)
   }
 }
 
@@ -46,20 +47,7 @@ export const updateDeckTC = (params: UpdateDeckParams) => async (dispatch: AppDi
     dispatch(updateDeckAC(res.data))
     dispatch(setAppStatusAC('succeeded'))
   } catch (e) {
-    setErrorMessage(e, dispatch)
+    handleError(e, dispatch)
   }
 }
 
-const setErrorMessage = (e: unknown, dispatch: AppDispatch) => {
-  let message: string = 'Something went wrong :('
-  if (axios.isAxiosError(e) && e.response) {
-    message = e.response.data.errorMessages[0].message
-  } else if (axios.isAxiosError(e) && e.code === 'ERR_NETWORK') {
-    message = e.message
-  } else if (e instanceof Error) {
-    message = e.message
-  }
-
-  console.log(message)
-  dispatch(setAppStatusAC('failed', message))
-}

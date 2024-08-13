@@ -6,7 +6,7 @@ import { useAppSelector } from './store.ts'
 import { appStatusSelector } from './app-selectors.ts'
 
 export const App = () => {
-  const appStatus = useAppSelector(appStatusSelector).status
+  const appStatus = useAppSelector(appStatusSelector)
 
   return (
     <div>

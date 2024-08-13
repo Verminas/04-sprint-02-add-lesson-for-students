@@ -1,14 +1,17 @@
 import { useEffect } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
-import { useAppSelector } from '../store.ts'
-import { appStatusSelector } from '../app-selectors.ts'
+import { useAppDispatch, useAppSelector } from '../store.ts'
+import { appErrorSelector, appStatusSelector } from '../app-selectors.ts'
+import { setAppErrorAC } from '../app-reducer.ts'
 
 export const GlobalError = () => {
-  const errorMessage = useAppSelector(appStatusSelector).error
+  const errorMessage = useAppSelector(appErrorSelector)
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if (errorMessage) {
       toast.error(errorMessage)
+      dispatch(setAppErrorAC(null))
     }
   }, [errorMessage])
 
